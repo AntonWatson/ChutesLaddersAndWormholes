@@ -29,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
     public bool isActive;
     [SerializeField]
     public int diceResult = 0;
+    [SerializeField]
+    GameManager gameManager;
     
     // Start is called before the first frame update
     void Start()
@@ -86,38 +88,56 @@ public class PlayerMovement : MonoBehaviour
     
     }
 
+    void movementForward()
+    {
+        TurnIsFinished = false;
+        int dice = Random.Range(1, 7);
+        diceResult = dice;
+        currentPosition += dice;
+        diceRollText.text = "Dice result: " + dice.ToString();
+        if (currentPosition >= 100)
+        {
+
+            currentPosition = 99;
+        }
+        this.transform.position = positions[currentPosition].transform.position;
+        TurnIsFinished = true;
+        Debug.Log("Se ha hecho una tirada de dado");
+
+
+    }
+    void movementBackWards() {
+        TurnIsFinished = false;
+        int dice = Random.Range(1, 7);
+        diceResult = dice;
+        currentPosition -= dice;
+        if (currentPosition <= 0)
+        {
+            currentPosition = 0;
+        }
+        diceRollText.text = "Dice result: " + dice.ToString();
+        this.transform.position = positions2[currentPosition].transform.position;
+        TurnIsFinished = true;
+    }
+
+
+    public void Movement() { }
+
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && currentPosition < 100 && !isInReverseBoard && isActive)
         {
-            TurnIsFinished = false;
-            int dice = Random.Range(1, 7);
-            diceResult = dice;
-            currentPosition += dice;
-            diceRollText.text = "Dice result: " + dice.ToString();
-            if (currentPosition >= 100) {
-
-                currentPosition = 99;
-            }
-            this.transform.position = positions[currentPosition].transform.position;
-            TurnIsFinished = true;
-            isActive = false;
+            movementForward();
         }
         else if (Input.GetKeyDown(KeyCode.Space) && currentPosition > -1 && isInReverseBoard && isActive)
         {
-            TurnIsFinished = false;
-            int dice = Random.Range(1, 7);
-            diceResult = dice;
-            currentPosition -= dice;
-            if (currentPosition <= 0) {
-                currentPosition = 0;
-            }
-            diceRollText.text = "Dice result: " + dice.ToString();
-            this.transform.position = positions2[currentPosition].transform.position;
-            TurnIsFinished = true;
+            movementBackWards();
+        } else if (Input.GetKeyUp(KeyCode.Space) && isActive){
             isActive = false;
-
-        }
+            GameEvent gameEvent = new GameEvent();
+            gameEvent.eventType = GameEvent.Type.endTurn;
+            gameManager.HandleGameEvent(gameEvent);
+        } 
     }
 }

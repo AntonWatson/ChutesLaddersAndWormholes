@@ -62,9 +62,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Text currentPlayerName;
 
+    
 
 
-    void HandleGameEvent(GameEvent gameEvent) {
+    public void HandleGameEvent(GameEvent gameEvent) {
         switch (gameEvent.eventType) {
             case GameEvent.Type.startTurn:
                 phase = Phase.Beginning;
@@ -74,7 +75,12 @@ public class GameManager : MonoBehaviour
                 break;
             case GameEvent.Type.diceRoll:                
                 break;
-            case GameEvent.Type.endTurn:                
+            case GameEvent.Type.endTurn:
+                currentPlayerIndex++;
+                currentPlayerIndex %= 4;
+                Debug.Log("starting turn");
+                phase = Phase.Beginning;
+                playerList[currentPlayerIndex].GetComponent<PlayerMovement>().StartTurn();
                 break;
         }    
     }
@@ -235,7 +241,7 @@ public class GameManager : MonoBehaviour
         ChutesFactory(board1Postions);
         ChutesFactory(board2Postions);
         LadderFactory(board1Postions);
-        LadderFactory(board2Postions);
+        LadderFactory(board2Postions);  
         currentPlayerIndex = 0;
         GameEvent startTurnEvent = new GameEvent();
         startTurnEvent.eventType = GameEvent.Type.startTurn;
@@ -246,6 +252,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+       
     }
 }
