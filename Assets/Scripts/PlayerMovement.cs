@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {   
@@ -16,10 +17,28 @@ public class PlayerMovement : MonoBehaviour
     bool hasMoved = false;
     [SerializeField]
     bool TurnIsFinished = false;
+    [SerializeField]
+    Text diceRollText;
+    [SerializeField]
+    Text CurrentPhase;
+    [SerializeField]
+    Text currentPlayerName;
+    [SerializeField]
+    string playerName;
+    [SerializeField]
+    public bool isActive;
+    [SerializeField]
+    public int diceResult = 0;
+    
     // Start is called before the first frame update
     void Start()
     {
         this.transform.position = positions[0].transform.position;
+    }
+
+    public void UpdateUI(string playerName, string diceResult, string phase) {
+        CurrentPhase.text ="Current phase: " + phase;
+        currentPlayerName.text = "Player: " + playerName;        
     }
 
     private void OnCollisionEnter(Collision other)
@@ -62,32 +81,43 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    public void StartTurn() {
+        isActive = true;
+    
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && currentPosition < 100 && !isInReverseBoard)
+        if (Input.GetKeyDown(KeyCode.Space) && currentPosition < 100 && !isInReverseBoard && isActive)
         {
             TurnIsFinished = false;
-            int dice = Random.Range(1, 6);
-            
+            int dice = Random.Range(1, 7);
+            diceResult = dice;
             currentPosition += dice;
+            diceRollText.text = "Dice result: " + dice.ToString();
+            if (currentPosition >= 100) {
 
-                this.transform.position = positions[currentPosition].transform.position;
-
+                currentPosition = 99;
+            }
+            this.transform.position = positions[currentPosition].transform.position;
             TurnIsFinished = true;
-
+            isActive = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Space) && currentPosition > -1 && isInReverseBoard)
+        else if (Input.GetKeyDown(KeyCode.Space) && currentPosition > -1 && isInReverseBoard && isActive)
         {
             TurnIsFinished = false;
-            int dice = Random.Range(1, 6);
+            int dice = Random.Range(1, 7);
+            diceResult = dice;
             currentPosition -= dice;
+            if (currentPosition <= 0) {
+                currentPosition = 0;
+            }
+            diceRollText.text = "Dice result: " + dice.ToString();
             this.transform.position = positions2[currentPosition].transform.position;
             TurnIsFinished = true;
+            isActive = false;
 
         }
-        
-
-        
     }
 }

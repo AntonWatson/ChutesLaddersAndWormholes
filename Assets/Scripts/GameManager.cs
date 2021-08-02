@@ -1,9 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    enum Phase
+    {   
+        None,
+        Beginning,
+        Prerroll,
+        Rolling,
+        Result,
+        PostResult,
+        Movement,
+        PreLanding,
+        Landing,
+        PostLanding
+    }
 
     [SerializeField]
     GameObject baseLadder;
@@ -39,8 +53,31 @@ public class GameManager : MonoBehaviour
     int amountOfChutes = 3;
     [SerializeField]
     int amountOfWormHoles = 4;
+    [SerializeField]
+    Phase phase = Phase.None;
+    [SerializeField]
+    GameObject[] playerList;
+    [SerializeField]
+    int currentPlayerIndex;
+    [SerializeField]
+    Text currentPlayerName;
 
 
+
+    void HandleGameEvent(GameEvent gameEvent) {
+        switch (gameEvent.eventType) {
+            case GameEvent.Type.startTurn:
+                phase = Phase.Beginning;
+                playerList[currentPlayerIndex].GetComponent<PlayerMovement>().StartTurn();
+                break;
+            case GameEvent.Type.playCard:                
+                break;
+            case GameEvent.Type.diceRoll:                
+                break;
+            case GameEvent.Type.endTurn:                
+                break;
+        }    
+    }
 
     void LadderFactory(GameObject[] boardPositions){
         for (int i = 0; i < amountOfLadders; i++) {
@@ -77,8 +114,6 @@ public class GameManager : MonoBehaviour
             OtherLadderToCreate[i].transform.position = boardPositions[otherLadder.GetComponent<OtherLadder>().otherPosition].transform.position;
         }
     }
-
-
     void ChutesFactory(GameObject[] boardPositions)
     {
         for (int i = 0; i < amountOfChutes; i++)
@@ -193,7 +228,6 @@ public class GameManager : MonoBehaviour
     }
 
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -202,6 +236,11 @@ public class GameManager : MonoBehaviour
         ChutesFactory(board2Postions);
         LadderFactory(board1Postions);
         LadderFactory(board2Postions);
+        currentPlayerIndex = 0;
+        GameEvent startTurnEvent = new GameEvent();
+        startTurnEvent.eventType = GameEvent.Type.startTurn;
+        startTurnEvent.playerIndex = currentPlayerIndex;
+        HandleGameEvent(startTurnEvent);
     }
 
     // Update is called once per frame
