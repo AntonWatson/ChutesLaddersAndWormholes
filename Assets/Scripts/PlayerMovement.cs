@@ -10,9 +10,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     GameObject[] positions2;
     [SerializeField]
-    int currentPosition = 0;
+   public int currentPosition = 0;
     [SerializeField]
-    bool isInReverseBoard = false;
+    public bool isInReverseBoard = false;
     [SerializeField]
     bool hasMoved = false;
     [SerializeField]
@@ -31,7 +31,13 @@ public class PlayerMovement : MonoBehaviour
     public int diceResult = 0;
     [SerializeField]
     GameManager gameManager;
-    
+    [SerializeField]
+    public int playerIndex;
+    [SerializeField]
+   public Button rollButton;
+    [SerializeField]
+   public Button endTurnButton;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -83,12 +89,8 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    public void StartTurn() {
-        isActive = true;
-    
-    }
 
-    void movementForward()
+    public void movementForward()
     {
         TurnIsFinished = false;
         int dice = Random.Range(1, 7);
@@ -106,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     }
-    void movementBackWards() {
+    public void movementBackWards() {
         TurnIsFinished = false;
         int dice = Random.Range(1, 7);
         diceResult = dice;
@@ -120,17 +122,33 @@ public class PlayerMovement : MonoBehaviour
         TurnIsFinished = true;
     }
 
+    public void Roll() {
 
-    public void Movement() { }
+        print("player " + (playerIndex + 1) + " rolled their dice");
+        GameEvent gameEvent = new GameEvent();
+        gameEvent.eventType = GameEvent.Type.diceRoll;
+        gameManager.HandleGameEvent(gameEvent);
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && currentPosition < 100 && !isInReverseBoard && isActive)
+
+    }
+    public void EndTurn() {
+
+        print("player " + (playerIndex + 1) + " ended their turn");
+        GameEvent gameEvent = new GameEvent();
+        gameEvent.eventType = GameEvent.Type.endTurn;
+        gameManager.HandleGameEvent(gameEvent);
+
+
+    }
+
+
+    public void Movement() {       
+        if (!isActive) { return; }
+        if (Input.GetKeyDown(KeyCode.Space) && currentPosition < 100 && !isInReverseBoard )
         {
             movementForward();
         }
-        else if (Input.GetKeyDown(KeyCode.Space) && currentPosition > -1 && isInReverseBoard && isActive)
+        else if (Input.GetKeyDown(KeyCode.Space) && currentPosition > -1 && isInReverseBoard )
         {
             movementBackWards();
         } else if (Input.GetKeyUp(KeyCode.Space) && isActive){
@@ -138,6 +156,22 @@ public class PlayerMovement : MonoBehaviour
             GameEvent gameEvent = new GameEvent();
             gameEvent.eventType = GameEvent.Type.endTurn;
             gameManager.HandleGameEvent(gameEvent);
-        } 
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (gameManager.currentPlayerIndex == this.playerIndex)
+        {
+            rollButton.interactable = ((int)gameManager.phase < (int)GameManager.Phase.Rolling);
+            endTurnButton.interactable = ((int)gameManager.phase > (int)GameManager.Phase.Rolling);
+        }
+        else {
+            rollButton.interactable = false;
+            endTurnButton.interactable = false;
+        }
+      
+
     }
 }

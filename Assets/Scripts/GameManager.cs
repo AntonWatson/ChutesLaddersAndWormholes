@@ -5,18 +5,18 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    enum Phase
+    public enum Phase : int
     {   
-        None,
-        Beginning,
-        Prerroll,
-        Rolling,
-        Result,
-        PostResult,
-        Movement,
-        PreLanding,
-        Landing,
-        PostLanding
+        None = 0,
+        Beginning = 1,
+        Prerroll = 2,
+        Rolling = 3,
+        Result = 4,
+        PostResult = 5,
+        Movement = 6,
+        PreLanding = 7,
+        Landing = 8,
+        PostLanding = 9
     }
 
     [SerializeField]
@@ -54,13 +54,16 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     int amountOfWormHoles = 4;
     [SerializeField]
-    Phase phase = Phase.None;
+    public Phase phase = Phase.None;
     [SerializeField]
-    GameObject[] playerList;
+    PlayerMovement[] playerList;
     [SerializeField]
-    int currentPlayerIndex;
+    public int currentPlayerIndex;
     [SerializeField]
     Text currentPlayerName;
+    private object isInReverseBoard;
+
+    [SerializeField]
 
     
 
@@ -69,23 +72,35 @@ public class GameManager : MonoBehaviour
         switch (gameEvent.eventType) {
             case GameEvent.Type.startTurn:
                 phase = Phase.Beginning;
-                playerList[currentPlayerIndex].GetComponent<PlayerMovement>().StartTurn();
                 break;
             case GameEvent.Type.playCard:                
                 break;
-            case GameEvent.Type.diceRoll:                
+            case GameEvent.Type.diceRoll:
+                DiceRoll();
+                phase = Phase.Result;
                 break;
             case GameEvent.Type.endTurn:
                 currentPlayerIndex++;
                 currentPlayerIndex %= 4;
                 Debug.Log("starting turn");
                 phase = Phase.Beginning;
-                playerList[currentPlayerIndex].GetComponent<PlayerMovement>().StartTurn();
+
                 break;
         }    
     }
 
-    void LadderFactory(GameObject[] boardPositions){
+    public void DiceRoll()
+    {
+        PlayerMovement player = playerList[currentPlayerIndex];
+        if (player.currentPosition < 100 && !player.isInReverseBoard)
+        {
+            player.movementForward();
+        } else if (player.currentPosition > -1 && player.isInReverseBoard)
+        {
+            player.movementBackWards();
+        }
+    }
+        void LadderFactory(GameObject[] boardPositions){
         for (int i = 0; i < amountOfLadders; i++) {
             GameObject firstLadder = Instantiate(baseLadder, new Vector3(0, 0, 0), Quaternion.identity);
 
@@ -251,8 +266,22 @@ public class GameManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {/*
+        if (Input.GetKeyDown(KeyCode.Space) && playerList[pl]currentPosition < 100 && !isInReverseBoard && isActive)
+        {
+            movementForward();
+        }
+        else if (Input.GetKeyDown(KeyCode.Space) && currentPosition > -1 && isInReverseBoard && isActive)
+        {
+            movementBackWards();
+        }
+        else if (Input.GetKeyUp(KeyCode.Space) && isActive)
+        {
+            isActive = false;
+            GameEvent gameEvent = new GameEvent();
+            gameEvent.eventType = GameEvent.Type.endTurn;
+            gameManager.HandleGameEvent(gameEvent);
+        }*/
 
-       
     }
 }
