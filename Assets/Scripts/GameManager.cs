@@ -132,7 +132,9 @@ public class GameManager : MonoBehaviour
             LadderToCreate[i] = firstLadder;
             OtherLadderToCreate[i] = otherLadder;
             LadderToCreate[i].transform.position = boardPositions[firstLadder.GetComponent<Ladders>().position].transform.position;
+            LadderToCreate[i].transform.position -= new Vector3(0, 0.2f, 0);
             OtherLadderToCreate[i].transform.position = boardPositions[otherLadder.GetComponent<OtherLadder>().otherPosition].transform.position;
+            OtherLadderToCreate[i].transform.position -= new Vector3(0, 0.2f, 0);
         }
     }
     void ChutesFactory(GameObject[] boardPositions)
@@ -199,7 +201,9 @@ public class GameManager : MonoBehaviour
             ChuteToCreate[i] = firstChute;
             OtherChuteToCreate[i] = otherChute;
             ChuteToCreate[i].transform.position = boardPositions[firstChute.GetComponent<Chutes>().position].transform.position;
+            ChuteToCreate[i].transform.position -= new Vector3(0, 0.2f, 0);
             OtherChuteToCreate[i].transform.position = boardPositions[otherChute.GetComponent<OtherChutes>().otherPosition].transform.position;
+            OtherChuteToCreate[i].transform.position -= new Vector3(0, 0.2f, 0);
         }
     }
 
@@ -240,8 +244,10 @@ public class GameManager : MonoBehaviour
             otherWormHole.GetComponent<WormHole>().otherWormHole = firstWormHole;
             wormHoleToCreate[i] = firstWormHole;
             otherWormHoleToCreate[i] = otherWormHole;
-            wormHoleToCreate[i].transform.position = boardPositions1[firstWormHole.GetComponent<WormHole>().position].transform.position; 
+            wormHoleToCreate[i].transform.position = boardPositions1[firstWormHole.GetComponent<WormHole>().position].transform.position;
+            wormHoleToCreate[i].transform.position -= new Vector3(0, 0.2f, 0);
             otherWormHoleToCreate[i].transform.position = boardPositions2[otherWormHole.GetComponent<WormHole>().otherPosition].transform.position;
+            otherWormHoleToCreate[i].transform.position -= new Vector3(0, 0.2f, 0);
         }
 
 
