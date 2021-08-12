@@ -61,10 +61,10 @@ public class GameManager : MonoBehaviour
     public int currentPlayerIndex;
     [SerializeField]
     Text currentPlayerName;
-    private object isInReverseBoard;
-
     [SerializeField]
-
+    AudioSource musicPlayer1;
+    [SerializeField]
+    AudioSource musicPlayer2;
     
 
 
@@ -82,6 +82,23 @@ public class GameManager : MonoBehaviour
             case GameEvent.Type.endTurn:
                 currentPlayerIndex++;
                 currentPlayerIndex %= 4;
+                if (!playerList[currentPlayerIndex].isInReverseBoard)
+                {
+                    playerList[currentPlayerIndex].MoveCamera(playerList[currentPlayerIndex].camera, playerList[currentPlayerIndex].cameraRails1);
+                    if (musicPlayer2.isPlaying) {
+                        musicPlayer2.Stop();
+                        musicPlayer1.Play();
+                    }
+                } else {
+                    playerList[currentPlayerIndex].MoveCamera(playerList[currentPlayerIndex].camera, playerList[currentPlayerIndex].cameraRails2);
+                    if (musicPlayer1.isPlaying)
+                    {
+                        musicPlayer1.Stop();
+                        musicPlayer2.Play();
+                    }
+
+
+                }
                 Debug.Log("starting turn");
                 phase = Phase.Beginning;
 

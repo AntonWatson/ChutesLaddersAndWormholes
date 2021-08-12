@@ -37,7 +37,12 @@ public class PlayerMovement : MonoBehaviour
    public Button rollButton;
     [SerializeField]
    public Button endTurnButton;
-
+    [SerializeField]
+   public GameObject camera;
+    [SerializeField]
+   public Transform[] cameraRails1;
+    [SerializeField]
+   public Transform[] cameraRails2;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +52,35 @@ public class PlayerMovement : MonoBehaviour
     public void UpdateUI(string playerName, string diceResult, string phase) {
         CurrentPhase.text ="Current phase: " + phase;
         currentPlayerName.text = "Player: " + playerName;        
+    }
+
+    public void MoveCamera(GameObject camera, Transform[] rails) {
+
+        if (this.currentPosition > 0 && this.currentPosition < 20) {
+            camera.transform.position = rails[0].transform.position;        
+        }
+        else if (this.currentPosition >= 20 && this.currentPosition < 38)
+        {
+            camera.transform.position = rails[1].transform.position;
+        }
+        else if (this.currentPosition >= 38 && this.currentPosition < 58)
+        {
+            camera.transform.position = rails[2].transform.position;
+        }
+        else if (this.currentPosition >= 58 && this.currentPosition < 69)
+        {
+            camera.transform.position = rails[3].transform.position;
+        }
+        else if (this.currentPosition >= 69 && this.currentPosition < 80)
+        {
+            camera.transform.position = rails[4].transform.position;
+        }
+        else if (this.currentPosition >= 80 && this.currentPosition < 100)
+        {
+            camera.transform.position = rails[5].transform.position;
+        }
+
+
     }
 
     private void OnCollisionEnter(Collision other)
